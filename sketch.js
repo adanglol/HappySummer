@@ -1,53 +1,47 @@
 
-console.log("Hello World!");
 
+
+let clouds = []; // Array to store cloud objects
 
 function setup() {
-  createCanvas(windowWidth,windowHeight);
-//   background('rgba(102, 204, 255, 255)');
-    // background(51, 153, 255, 255); // Slightly Darker Blue Sunset Sky Color (RGBA)
-
-    // Define Colors for gradient background for
+    createCanvas(windowWidth, windowHeight);
     let color1 = color(51, 153, 255); // Slightly Darker Blue Sunset Sky Color (RGBA)
     let color2 = color(255, 230, 128); // White Color (RGBA)
     setGradient(0, 0, width, height, color1, color2);
 
+    // Create initial clouds
+    for (let i = 0; i < 3; i++) {
+        clouds.push(new Cloud(random(width), random(height * 0.3), random(50, 150)));
+    }
 }
 
 function draw() {
-  // background(200);
-//   fill(255, 0, 0);
-//   ellipse(mouseX, mouseY, 50, 50);
-    // noFill();
-    // stroke(255, 102, 0);
-    // line(85, 20, 10, 10);
-    // line(90, 90, 15, 80);
-    // stroke(0, 0, 0);
-    // bezier(85, 20, 10, 10, 90, 90, 15, 80);
+    // Draw gradient background
+    let color1 = color(51, 153, 255);
+    let color2 = color(255, 230, 128);
+    setGradient(0, 0, width, height, color1, color2);
 
+    // Draw and move clouds
+    for (let i = clouds.length - 1; i >= 0; i--) {
+        clouds[i].display();
+        clouds[i].move();
 
+        // Remove clouds when they move out of screen
+        if (clouds[i].x > width + 100) {
+            clouds.splice(i, 1);
+        }
+    }
 
-    // noFill();
-    // stroke(0);
-    // let curveWidth = width * 0.5; // 50% of screen width
-    // let curveHeight = height * 0.5; // 50% of screen height
-    // let controlPoint1X = width * 0.1; // Adjust as needed
-    // let controlPoint1Y = height * 0.1; // Adjust as needed
-    // let controlPoint2X = width * 0.9; // Adjust as needed
-    // let controlPoint2Y = height * 0.9; // Adjust as needed
-    // bezier(width * .9, 20, controlPoint1X, controlPoint1Y, controlPoint2X, controlPoint2Y, curveWidth, curveHeight);
-
-    // x y w h 
-    noStroke();
-    fill(255, 200, 0,10);
-    ellipse(width * .2, height * .2, width * .1, height * .15); // Left eye
+    // Once clouds are gone, draw text
+    if (clouds.length === 0) {
+    
+        fill(0);
+        textFont('papyrus');
+        textSize(60);
+        text("Happy Summer!", width * 0.35, height * 0.5);
+    }
 }
 
-
-// taking input
-function keyPressed() {
-
-}
 
 // Function to create gradient background
 function setGradient(x, y, w, h, color1, color2) {
@@ -60,3 +54,28 @@ function setGradient(x, y, w, h, color1, color2) {
       line(x, i, x + w, i);
     }
   }
+
+
+// Cloud class definition
+class Cloud {
+    constructor(x, y, size) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.speed = random(1, 3);
+    }
+
+    display() {
+        fill(255);
+        ellipse(this.x, this.y, this.size, this.size * 0.6);
+        ellipse(this.x + this.size * 0.4, this.y - this.size * 0.2, this.size * 0.8, this.size * 0.6);
+        ellipse(this.x + this.size * 0.8, this.y, this.size, this.size * 0.6);
+    }
+
+    move() {
+        this.x += this.speed;
+    }
+}
+
+
+
